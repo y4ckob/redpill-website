@@ -1,0 +1,25 @@
+# OS junk
+.DS_Store
+**/.DS_Store
+
+# Heavy source folders — not referenced by the site
+assets/Speaker images/
+assets/Catalogue images/
+assets/Logos of Colaborators/
+
+# Orphan / unreferenced video source (keep hero.mp4)
+assets/a6c1b84d886b421ea1d08749159a7e10.MP4
+
+# Gallery: exclude full-size originals, keep the web-optimised set the site uses
+assets/img/gallery/*
+!assets/img/gallery/web/
+!assets/img/gallery/web/**
+
+# Loose unreferenced strays at assets root
+assets/Q-S10.jpeg
+assets/Q6.jpeg
+assets/Q6 Side.jpeg
+assets/redpill_logo_alpha.png
+
+# Editor/tooling
+.claude/
