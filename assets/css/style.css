@@ -844,6 +844,11 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 .drawer__body { padding: 12px 28px; }
 .drawer__empty { text-align: center; color: var(--muted-2); padding: 60px 20px; font-size: 15px; }
 .drawer__empty svg { width: 44px; height: 44px; opacity: 0.4; margin: 0 auto 16px; }
+/* empty enquiry list: grow #drawerBody and centre the empty-state vertically in
+   the space above the foot, so it looks deliberate instead of floating up top.
+   Scoped with :has so it ONLY applies when empty — with line items present,
+   #drawerBody stays a normal block (items start at the top and scroll). */
+#drawerBody:has(.drawer__empty) { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .line-item { display: flex; gap: 14px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
 .line-item .li-info { flex: 1; }
 .line-item .li-info h4 { font-family: var(--font-body); font-size: 16px; font-weight: 600; }
