@@ -236,8 +236,18 @@
     return lines.join("\n");
   }
 
-  function submitEnquiry(formData) {
-    if (mode !== "project" && !mem.length) { toast("Add items before requesting a quote"); return; }
+  // loading state for a submit button: spinner + disabled while in flight
+  function setLoading(btn, on) {
+    if (!btn) return;
+    btn.classList.toggle("is-loading", on);
+    btn.disabled = on;
+  }
+
+  // `done` is called when the request settles (success OR failure / fallback),
+  // so the caller can clear the button's loading state and never get stuck.
+  function submitEnquiry(formData, done) {
+    done = done || function () {};
+    if (mode !== "project" && !mem.length) { toast("Add items before requesting a quote"); done(); return; }
 
     var payload = {
       type: mode === "project" ? "project" : "product",
@@ -271,11 +281,13 @@
             mem = []; save(); render();
           }
           setTimeout(closeDrawer, 1200);
+          done();
         })
-        .catch(function () { mailtoQuote(formData); });
+        .catch(function () { mailtoQuote(formData); done(); });
       return;
     }
     mailtoQuote(formData);
+    done();
   }
 
   function mailtoQuote(formData) {
@@ -469,21 +481,19 @@
           toast("Please add email and location");
           return;
         }
-        submitBtn.disabled = true;
-        var originalLabel = submitBtn.textContent;
-        submitBtn.textContent = "Sending…";
+        setLoading(submitBtn, true);
         submitEnquiry({
           email: emailEl.value.trim(),
           whatsapp: (document.getElementById("enq-whatsapp") || {}).value || "",
           location: locEl.value.trim(),
           indonesia: indCheck.checked,
           message: ((document.getElementById("enq-message") || {}).value || "").trim()
-        });
-        // Re-enable in case of failure / fallback
-        setTimeout(function () {
-          submitBtn.textContent = originalLabel;
+        }, function () {
+          // clear loading on success or failure; refreshSubmit re-applies the
+          // Indonesia-checkbox disabled rule so the button never sticks.
+          setLoading(submitBtn, false);
           refreshSubmit();
-        }, 2500);
+        });
       });
     }
 
@@ -492,13 +502,15 @@
     // fails, so nothing is lost.
     var cf = document.getElementById("contactForm");
     if (cf) {
+      var cBtn = cf.querySelector('button[type="submit"]');
       cf.addEventListener("submit", function (e) {
         e.preventDefault();
         var name = (document.getElementById("cName") || {}).value || "";
         var email = (document.getElementById("cEmail") || {}).value || "";
+        var whatsapp = (document.getElementById("cWhatsapp") || {}).value || "";
         var msg = (document.getElementById("cMsg") || {}).value || "";
         var sendMailto = function () {
-          var body = "Name: " + name + "\nEmail: " + email + "\n\n" + msg;
+          var body = "Name: " + name + "\nEmail: " + email + "\nWhatsApp: " + whatsapp + "\n\n" + msg;
           window.location.href = "mailto:" + ENQUIRY_EMAIL +
             "?subject=" + encodeURIComponent("Website enquiry — " + name) +
             "&body=" + encodeURIComponent(body);
@@ -506,13 +518,16 @@
         if (ENQUIRY_WEBHOOK) {
           // type:"project" routes through the Apps Script's project path, so the
           // message lands in the "About the space" column (Items stays empty).
-          // The script has no Name column, so fold the name into the message.
+          // whatsapp maps to the sheet's WhatsApp column; the script has no Name
+          // column, so the name is folded into the message.
           var payload = {
             type: "project",
             email: email,
+            whatsapp: whatsapp,
             message: "Contact form\nName: " + name + "\n\n" + msg,
             ts: new Date().toISOString()
           };
+          setLoading(cBtn, true);
           fetch(ENQUIRY_WEBHOOK, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -523,8 +538,9 @@
               if (!r.ok) throw new Error("HTTP " + r.body);
               toast("Message sent. We will be in touch.");
               cf.reset();
+              setLoading(cBtn, false);
             })
-            .catch(function () { sendMailto(); });
+            .catch(function () { setLoading(cBtn, false); sendMailto(); });
           return;
         }
         sendMailto();
