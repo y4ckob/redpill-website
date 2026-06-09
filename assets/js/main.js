@@ -10,7 +10,7 @@
      Script webhook like the F'n'B RSVP queue), set ENQUIRY_WEBHOOK
      to the webhook URL and the form will POST JSON to it.            */
   var ENQUIRY_EMAIL = "contact@redpillaudio.com";
-  var ENQUIRY_WEBHOOK = ""; // e.g. "https://script.google.com/macros/s/XXXX/exec"
+  var ENQUIRY_WEBHOOK = "https://script.google.com/macros/s/AKfycbwooF6YYZSGFaiKYU1gWN9GwpMEFyiq5HMzYEirOzI8JePAU4n9tPiYt_Q35Djd7RWf/exec";
 
   var STORE_KEY = "rpa_enquiry_v1";
 
@@ -487,7 +487,9 @@
       });
     }
 
-    // contact form (front-end only; opens email)
+    // contact form: POST to the enquiry webhook (same pattern as the drawer),
+    // falling back to a pre-filled mailto if the webhook is unset or the POST
+    // fails, so nothing is lost.
     var cf = document.getElementById("contactForm");
     if (cf) {
       cf.addEventListener("submit", function (e) {
@@ -495,10 +497,37 @@
         var name = (document.getElementById("cName") || {}).value || "";
         var email = (document.getElementById("cEmail") || {}).value || "";
         var msg = (document.getElementById("cMsg") || {}).value || "";
-        var body = "Name: " + name + "\nEmail: " + email + "\n\n" + msg;
-        window.location.href = "mailto:" + ENQUIRY_EMAIL +
-          "?subject=" + encodeURIComponent("Website enquiry — " + name) +
-          "&body=" + encodeURIComponent(body);
+        var sendMailto = function () {
+          var body = "Name: " + name + "\nEmail: " + email + "\n\n" + msg;
+          window.location.href = "mailto:" + ENQUIRY_EMAIL +
+            "?subject=" + encodeURIComponent("Website enquiry — " + name) +
+            "&body=" + encodeURIComponent(body);
+        };
+        if (ENQUIRY_WEBHOOK) {
+          // type:"project" routes through the Apps Script's project path, so the
+          // message lands in the "About the space" column (Items stays empty).
+          // The script has no Name column, so fold the name into the message.
+          var payload = {
+            type: "project",
+            email: email,
+            message: "Contact form\nName: " + name + "\n\n" + msg,
+            ts: new Date().toISOString()
+          };
+          fetch(ENQUIRY_WEBHOOK, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+          })
+            .then(function (res) { return res.text().then(function (t) { return { ok: res.ok, body: t }; }); })
+            .then(function (r) {
+              if (!r.ok) throw new Error("HTTP " + r.body);
+              toast("Message sent. We will be in touch.");
+              cf.reset();
+            })
+            .catch(function () { sendMailto(); });
+          return;
+        }
+        sendMailto();
       });
     }
 
