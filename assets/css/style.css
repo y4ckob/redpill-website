@@ -319,6 +319,12 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
    only the showroom is zeroed; other sections keep the header offset. Mobile
    showroom uses its own block:end landing (main.js) and is unaffected. */
 @media (min-width: 761px) { #showroom { scroll-margin-top: 0; } }
+/* Contact buttons anchor to the "Get in touch" HEADING (not the section top),
+   so the form heading lands near the viewport top with 24px breathing room
+   instead of below the contact section's 80-160px top padding. The carousel
+   (section directly above) is naturally off-screen above. Same on mobile and
+   desktop. Nudge the 24px to taste. */
+#get-in-touch { scroll-margin-top: 24px; }
 .sec { padding-block: clamp(80px, 13vh, 160px); }
 .sec--tight { padding-block: clamp(56px, 9vh, 100px); }
 .sec-head { max-width: 760px; margin-bottom: 56px; }
