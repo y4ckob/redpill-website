@@ -291,6 +291,10 @@ h1, h2, h3, h4 {
   transition: color var(--t-fast) var(--ease);
 }
 .hero__minor:hover { color: var(--text); }
+.hero__est {
+  margin-top: 14px;
+  font-size: 13px; letter-spacing: 0.04em; color: var(--muted-2);
+}
 .scrollcue {
   position: absolute;
   bottom: 26px; left: 50%;
