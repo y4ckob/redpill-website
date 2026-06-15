@@ -292,7 +292,7 @@ h1, h2, h3, h4 {
 }
 .hero__minor:hover { color: var(--text); }
 .hero__est {
-  margin-top: 14px;
+  margin-top: 28px;
   font-size: 13px; letter-spacing: 0.04em; color: var(--muted-2);
 }
 .scrollcue {
