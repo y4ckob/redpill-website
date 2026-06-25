@@ -583,7 +583,8 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 /* collaborators */
 .partners { text-align: center; }
 .partners .marquee {
-  margin-top: 32px;
+  margin-top: 44px;
+  padding-block: 16px;
   overflow: hidden;
   position: relative;
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
@@ -592,7 +593,7 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 .partners .marquee__track {
   display: flex;
   width: max-content;
-  animation: rpa-marquee 70s linear infinite;
+  animation: rpa-marquee 110s linear infinite;
   will-change: transform;
 }
 .partners .marquee:hover .marquee__track { animation-play-state: paused; }
@@ -605,15 +606,13 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 .partners img {
   width: auto;
   height: auto;
-  max-height: 26px;
-  max-width: 210px;
+  max-height: 80px;
+  max-width: 460px;
   opacity: 0.6;
   filter: brightness(1.15);
   flex-shrink: 0;
   transition: opacity var(--t-fast) var(--ease);
 }
-.partners img.symbol        { max-height: 40px; max-width: 60px;  }
-.partners img.symbol--wide  { max-width: 130px; }
 .partners img:hover { opacity: 0.95; }
 
 @keyframes rpa-marquee {
@@ -1292,7 +1291,10 @@ img.will-fade.loaded { opacity: 1; }
   /* collaborator logos scroll faster on mobile (desktop stays 70s). Only the
      duration is overridden, so the linear seamless -50% loop is unchanged.
      Reduced-motion still wins (it sets animation-name:none). Nudge to taste. */
-  .partners .marquee__track { animation-duration: 35s; }
+  .partners .marquee__track { animation-duration: 60s; }
+  /* smaller logos on phones so the carousel still reads comfortably */
+  .partners img { max-height: 56px; max-width: 300px; }
+  .partners .marquee { margin-top: 32px; padding-block: 10px; }
   /* scrolled header fully opaque on mobile (no content shows through). The
      status-bar strip above it stays solid #0b0b0d via the theme-color meta,
      so no viewport-fit=cover / env() is needed. At-top transparent state
