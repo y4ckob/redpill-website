@@ -620,6 +620,50 @@
       }, { passive: true });
     }
 
+    // collaborators modal (index.html only; no-ops elsewhere). Triggered by the
+    // "View all" link or by clicking any logo in the carousel.
+    var collabModal = document.getElementById("collabModal");
+    if (collabModal) {
+      var collabScrollY = 0;
+      function collabOpen() {
+        // iOS-safe scroll lock: pin the body and remember the scroll position,
+        // restoring it on close (a plain overflow:hidden does not hold on iOS)
+        collabScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        document.body.style.position = "fixed";
+        document.body.style.top = (-collabScrollY) + "px";
+        document.body.style.left = "0";
+        document.body.style.right = "0";
+        document.body.style.width = "100%";
+        collabModal.classList.add("open");
+        collabModal.setAttribute("aria-hidden", "false");
+      }
+      function collabClose() {
+        collabModal.classList.remove("open");
+        collabModal.setAttribute("aria-hidden", "true");
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        window.scrollTo(0, collabScrollY);
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-open-collab]"), function (el) {
+        el.addEventListener("click", collabOpen);
+      });
+      Array.prototype.forEach.call(document.querySelectorAll(".partners .marquee img"), function (img) {
+        img.addEventListener("click", collabOpen);
+      });
+      collabModal.querySelector(".collab-modal__close").addEventListener("click", collabClose);
+      // click on the backdrop (outside the box) closes
+      collabModal.addEventListener("click", function (e) {
+        if (e.target === collabModal) collabClose();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && collabModal.classList.contains("open")) collabClose();
+      });
+    }
+
     // rows stay equal-height at rest; while a card is expanded its row
     // neighbours get align-self:start so they keep their natural height
     // (same offsetTop = same grid row)
