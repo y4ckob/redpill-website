@@ -29,6 +29,7 @@
   --t-fast: 0.2s;   /* hover / press micro-feedback */
   --t-med:  0.4s;   /* structural movement: lifts, drawer, nav */
   --t-slow: 0.8s;   /* scroll reveals, image fades */
+  --page-fade: 0.5s;  /* page-to-page cross-dissolve; tune the whole transition from here */
 
   --hover-zoom: 1.02;   /* desktop hover scale; tune from here (1 = off) */
 
@@ -37,7 +38,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; background: var(--bg); }
 
 body {
   background: var(--bg);
@@ -1597,4 +1598,26 @@ img.will-fade.loaded { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .faq__panel, .faq__answer, .faq__chev { transition: none; }
   .faq__item.reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   PAGE TRANSITIONS
+   Custom cross-dissolve between same-origin pages, driven by
+   main.js (works in every modern browser, Firefox included).
+   On arrival a page fades in from the dark backdrop; before a
+   genuine navigation the outgoing page fades out, then main.js
+   follows the link. The shared dark --bg means the midpoint is a
+   clean dark frame, never a white flash. Opacity-only (no
+   transform) so the fixed nav, WhatsApp float and drawer keep
+   their viewport positioning. Tunable from the single
+   --page-fade token in :root.
+   ============================================================ */
+@keyframes page-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes page-fade-out { from { opacity: 1; } to { opacity: 0; } }
+body { animation: page-fade-in var(--page-fade) var(--ease) both; }
+body.is-leaving { animation: page-fade-out var(--page-fade) var(--ease) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* opted out of motion: no fade either way, navigation is instant */
+  body, body.is-leaving { animation: none; }
 }

@@ -973,3 +973,68 @@
     });
   });
 })();
+
+/* -----------------------------------------------------------
+   Page transitions: cross-dissolve between same-origin pages.
+   Fade-IN is handled entirely by CSS (body { animation: page-fade-in }),
+   so it runs even if this script is slow or fails. Here we only fade the
+   current page OUT before a real navigation, then follow the link, and
+   tidy up after back/forward (bfcache) restores. Every case that must NOT
+   fade (new-tab clicks, downloads, external links, same-page anchors,
+   <button> triggers, reduced-motion) is filtered out below.
+   ----------------------------------------------------------- */
+(function () {
+  var root = document.documentElement;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // single source of truth for the duration: read the --page-fade CSS token
+  function fadeMs() {
+    var v = parseFloat(getComputedStyle(root).getPropertyValue("--page-fade"));
+    return isNaN(v) ? 500 : v * 1000;
+  }
+
+  var leaving = false;
+
+  document.addEventListener("click", function (e) {
+    if (leaving) { e.preventDefault(); return; }       // already fading out
+    if (reduce.matches) return;                         // reduced motion: native instant nav
+    if (e.defaultPrevented) return;                     // handled by something else
+    if (e.button !== 0) return;                         // left-click only (middle/right excluded)
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // new tab / window / download intent
+
+    var a = e.target.closest("a[href]");
+    if (!a) return;                                     // not a link (drawer triggers are <button>)
+    if (a.hasAttribute("download")) return;             // brochure download (also: never unloads)
+    var target = a.getAttribute("target");
+    if (target && target !== "_self") return;           // target="_blank" and named targets
+    if ((a.getAttribute("rel") || "").indexOf("external") !== -1) return;
+
+    var href = a.getAttribute("href");
+    if (!href || href.charAt(0) === "#") return;        // same-page anchor: native scroll
+
+    var url;
+    try { url = new URL(a.href, location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;         // external / mailto / tel / wa.me
+    // same document (path + query identical): let the browser scroll/no-op, no fade
+    if (url.pathname === location.pathname && url.search === location.search) return;
+
+    // genuine same-origin navigation to another page -> cross-dissolve out, then go
+    e.preventDefault();
+    leaving = true;
+    document.body.classList.add("is-leaving");
+    setTimeout(function () { location.href = a.href; }, fadeMs());
+  });
+
+  // back/forward + bfcache: drop any leftover fade-out state, and replay the
+  // fade-in for restored pages (bfcache does not re-run CSS animations).
+  window.addEventListener("pageshow", function (e) {
+    leaving = false;
+    document.body.classList.remove("is-leaving");
+    if (e.persisted && !reduce.matches) {
+      var b = document.body;
+      b.style.animation = "none";
+      void b.offsetWidth;          // force reflow so the animation restarts
+      b.style.animation = "";
+    }
+  });
+})();
