@@ -29,7 +29,7 @@
   --t-fast: 0.2s;   /* hover / press micro-feedback */
   --t-med:  0.4s;   /* structural movement: lifts, drawer, nav */
   --t-slow: 0.8s;   /* scroll reveals, image fades */
-  --page-fade: 0.5s;  /* page-to-page cross-dissolve; tune the whole transition from here */
+  --page-fade: 0.25s;  /* page-to-page cross-dissolve; tune the whole transition from here */
 
   --hover-zoom: 1.02;   /* desktop hover scale; tune from here (1 = off) */
 
