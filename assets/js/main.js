@@ -784,6 +784,40 @@
       else if (accMQ.addListener) accMQ.addListener(onAccMQ); // older Safari
     }
 
+    // FAQ accordion (faq.html only): independent, multi-open rows. Each toggle
+    // is a native <button>, so Enter/Space work for free; we only flip is-open
+    // and aria-expanded. Panels animate via grid-template-rows 0fr->1fr in CSS
+    // (reduced-motion users get an instant open from the media query). The rows
+    // also carry .reveal, so the scroll observer below fades them in. Absent on
+    // other pages -> the querySelector is null and this block no-ops.
+    var faqList = document.querySelector(".faq");
+    if (faqList) {
+      var setFaqOpen = function (item, open) {
+        item.classList.toggle("is-open", open);
+        var t = item.querySelector(".faq__toggle");
+        if (t) t.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      Array.prototype.slice.call(faqList.querySelectorAll(".faq__toggle")).forEach(function (t) {
+        t.addEventListener("click", function () {
+          var item = t.closest(".faq__item");
+          if (item) setFaqOpen(item, !item.classList.contains("is-open"));
+        });
+      });
+      // deep links (e.g. /faq.html#villa-pricing): open and reveal the target row
+      var openFaqFromHash = function () {
+        var h = location.hash;
+        if (!h || h.length < 2) return;
+        var target;
+        try { target = faqList.querySelector(h); } catch (e) { return; }
+        if (target && target.classList.contains("faq__item")) {
+          setFaqOpen(target, true);
+          target.classList.add("in");
+        }
+      };
+      openFaqFromHash();
+      window.addEventListener("hashchange", openFaqFromHash);
+    }
+
     // mobile swipe carousels: pagination dots that track the active card.
     // Track + dots are absent on pages without them, so each call no-ops
     // silently. Dots stay hidden on desktop via CSS; the observer just keeps
