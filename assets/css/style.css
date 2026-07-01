@@ -13,10 +13,10 @@
   --text:      #f2f1ee;
   --muted:     #9a9aa2;
   --muted-2:   #6e6e76;
-  --red:       #e22b25;
-  --red-hi:    #ff4138;
-  --red-soft:  rgba(226,43,37,0.14);
-  --red-glow:  rgba(226,43,37,0.35);
+  --red:       #4A90D8;
+  --red-hi:    #6BA5E2;
+  --red-soft:  rgba(74,144,216,0.14);
+  --red-glow:  rgba(74,144,216,0.35);
 
   --maxw: 1240px;
   --gut: clamp(20px, 5vw, 64px);
