@@ -741,6 +741,15 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 /* contact */
 .contact { background: var(--bg-2); border-top: 1px solid var(--line); }
 .contact .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); }
+/* Honeypot: visually and interactively hidden, but present in the DOM so
+   bots fill it in. Deliberately not display:none, which some bots skip. */
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
 .field { margin-bottom: 20px; }
 .field label { display: block; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 9px; }
 .field input, .field textarea {

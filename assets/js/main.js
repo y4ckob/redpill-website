@@ -255,6 +255,8 @@
       whatsapp: formData.whatsapp,
       location: formData.location,
       indonesia: !!formData.indonesia,
+      website: formData.website || "",
+      form_render_time: formData.form_render_time || "",
       ts: new Date().toISOString()
     };
     if (mode === "project") {
@@ -334,6 +336,10 @@
         o = document.getElementById("drawerOverlay");
     if (d) d.classList.add("open");
     if (o) o.classList.add("open");
+    // Stamp the enquiry form's render time now the drawer is actually shown,
+    // so the server can reject inhumanly fast submissions (see webhook).
+    var rt = document.getElementById("enq-render-time");
+    if (rt) rt.value = Date.now();
   }
   function closeDrawer() {
     var d = document.getElementById("drawer"),
@@ -487,7 +493,9 @@
           whatsapp: (document.getElementById("enq-whatsapp") || {}).value || "",
           location: locEl.value.trim(),
           indonesia: indCheck.checked,
-          message: ((document.getElementById("enq-message") || {}).value || "").trim()
+          message: ((document.getElementById("enq-message") || {}).value || "").trim(),
+          website: (document.getElementById("enq-website") || {}).value || "",
+          form_render_time: (document.getElementById("enq-render-time") || {}).value || ""
         }, function () {
           // clear loading on success or failure; refreshSubmit re-applies the
           // Indonesia-checkbox disabled rule so the button never sticks.
@@ -503,6 +511,10 @@
     var cf = document.getElementById("contactForm");
     if (cf) {
       var cBtn = cf.querySelector('button[type="submit"]');
+      // Stamp render time on load so the server can reject inhumanly fast
+      // submissions (see webhook).
+      var cRt = document.getElementById("cRenderTime");
+      if (cRt) cRt.value = Date.now();
       cf.addEventListener("submit", function (e) {
         e.preventDefault();
         var name = (document.getElementById("cName") || {}).value || "";
@@ -525,6 +537,8 @@
             email: email,
             whatsapp: whatsapp,
             message: "Contact form\nName: " + name + "\n\n" + msg,
+            website: (document.getElementById("cWebsite") || {}).value || "",
+            form_render_time: (document.getElementById("cRenderTime") || {}).value || "",
             ts: new Date().toISOString()
           };
           setLoading(cBtn, true);
