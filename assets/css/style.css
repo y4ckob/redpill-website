@@ -1345,6 +1345,8 @@ img.will-fade.loaded { opacity: 1; }
 
   /* hero eyebrow held to a single line at narrow widths */
   .hero .eyebrow { font-size: 10px; letter-spacing: 0.12em; white-space: nowrap; }
+  /* drop "Villas & " on mobile: "Hospitality · Private Residences · Wellness" */
+  .eyebrow__villas { display: none; }
   .nav-links { display: none; }
   .nav-toggle { display: inline-flex; padding: 10px; margin-right: -10px; }
   .nav.mobile-open .nav-links {
