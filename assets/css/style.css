@@ -931,7 +931,7 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
 .card__toggle svg { width: 14px; height: 14px; transition: transform var(--t-med) var(--ease); }
 .card--open .card__toggle svg { transform: rotate(180deg); }
 
-/* F1 Portal enquiry-only variant */
+/* Enquiry-only product card variant */
 .card__note {
   font-size: 13px;
   color: var(--muted-2);
