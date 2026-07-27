@@ -356,10 +356,13 @@
     // nav scroll state: solid background after 30px, and hide on scroll
     // down / show on scroll up (always visible near the top)
     var nav = document.querySelector(".nav");
+    var scrollcue = document.querySelector(".scrollcue");
     var lastY = window.scrollY;
     function onScroll() {
-      if (!nav) return;
       var y = window.scrollY;
+      // fade the hero scroll cue out once the visitor has started scrolling
+      if (scrollcue) scrollcue.classList.toggle("scrollcue--gone", y > 60);
+      if (!nav) return;
       nav.classList.toggle("scrolled", y > 30);
       if (nav.classList.contains("mobile-open")) { lastY = y; return; }
       if (y <= 10) {
