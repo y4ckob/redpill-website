@@ -23,3 +23,19 @@ assets/redpill_logo_alpha.png
 
 # Editor/tooling
 .claude/
+.venv/
+
+# Content picker app (local Instagram picks tool — never ship to the site)
+content_picker_app.py
+__pycache__/
+redpill-content-picks/
+redpill-content-picks-round2/
+.content-picker-cache/
+picks-board.html
+review-sheet.html
+
+# Pitch deck build (internal tooling, includes node_modules — never ship)
+deck/
+
+# FAQ working notes (internal build doc, not a public page)
+FAQ_MASTER_BUILD.md
