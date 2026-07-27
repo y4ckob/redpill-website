@@ -22,7 +22,11 @@ assets/Q6 Side.jpeg
 assets/redpill_logo_alpha.png
 
 # Editor/tooling
-.claude/
+# Track the project skills (authoritative build/brand/SEO conventions), but
+# keep machine-local settings (settings.local.json) out of the repo.
+.claude/*
+!.claude/skills/
+!.claude/skills/**
 .venv/
 
 # Content picker app (local Instagram picks tool — never ship to the site)
