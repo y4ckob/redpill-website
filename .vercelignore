@@ -1,0 +1,8 @@
+# Files kept in git but not served on the public site.
+# None of these are part of the deployed site; docs/ describes the webhook
+# architecture and should not be crawlable.
+.claude
+docs
+CLAUDE.md
+README.md
+RENOVATION-PROMPT.md
