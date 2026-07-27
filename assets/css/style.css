@@ -68,6 +68,17 @@ a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--red); color: #fff; }
 
+/* Focus: one consistent keyboard-visible ring in the brand red. Applies to
+   controls that had no visible focus state; form fields keep their existing
+   red-border focus, the faq toggle keeps its own inset ring. */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible,
+.gallery-item:focus-visible {
+  outline: 2px solid var(--red-hi);
+  outline-offset: 3px;
+}
+
 .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding-inline: max(var(--gut), env(safe-area-inset-left)) max(var(--gut), env(safe-area-inset-right)); }
 
 /* ---------- typography ---------- */
@@ -1091,8 +1102,10 @@ section[id] { scroll-margin-top: calc(80px + env(safe-area-inset-top)); }
   transform: translateY(6px);
   transition: transform var(--t-med) var(--ease);
 }
-.gallery-item:hover .gallery-item__veil { opacity: 1; }
-.gallery-item:hover .gallery-item__veil svg { transform: none; }
+.gallery-item:hover .gallery-item__veil,
+.gallery-item:focus-visible .gallery-item__veil { opacity: 1; }
+.gallery-item:hover .gallery-item__veil svg,
+.gallery-item:focus-visible .gallery-item__veil svg { transform: none; }
 /* persistent corner badge (touch affordance; hidden where hover exists) */
 .gallery-item__badge {
   position: absolute; right: 10px; bottom: 10px;
