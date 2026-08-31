@@ -15,6 +15,7 @@ index.html      the entire landing page: one file, inline CSS, no JavaScript
 static/         the only deployed asset folder
   78-logo.png     the 7.8 mark, light on transparent
   bg-blur.jpg     blurred capture of the old homepage, used as the backdrop
+  og-image.jpg    1200x630 social card
   favicon-*.png   512 and 180
 vercel.json     301s every path except /, /static/*, robots.txt, sitemap.xml
 robots.txt      allows everything, so Google can crawl and see the 301s
@@ -38,9 +39,10 @@ Only needed if the logo or the backdrop has to change. The site does not build.
 
 ```
 npm install
-npm run capture:bg          # rebuild static/bg-blur.jpg
-node scripts/build-logo.mjs # rebuild static/78-logo.png
-node scripts/build-favicons.mjs
+npm run capture:bg              # rebuild static/bg-blur.jpg
+node scripts/build-logo.mjs     # rebuild static/78-logo.png
+node scripts/build-favicons.mjs # rebuild static/favicon-*.png
+node scripts/build-og-image.mjs # rebuild static/og-image.jpg (run after capture:bg)
 ```
 
 Note that `capture:bg` screenshots the live redpillaudio.com homepage. Once the

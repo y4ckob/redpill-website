@@ -34,13 +34,6 @@ one Continue button. Do **not** add navigation, a contact block, email capture,
 a close button, social links, product content, or any red accent. If asked to
 extend the page, check that is really wanted before building.
 
-## Stale files, kept on purpose
-`.claude/skills/` (five skills), `docs/ENQUIRY_FORM_SETUP.md` and
-`RENOVATION-PROMPT.md` all describe the old four-page product site: the shop,
-the gallery, the enquiry drawer and its webhook. **None of it applies any
-more.** They are kept as history and are excluded from the deployment. Do not
-follow them, and do not treat the skills as authoritative for this repo.
-
 ## Brand voice — strict
 - British English spelling throughout.
 - No em dashes. Use commas, semicolons or parentheses instead.
@@ -63,9 +56,10 @@ to crawl the site to see the 301s.
 ## SEO
 - The `rel=canonical` points cross-domain at https://www.sevenpoint8.com/. That
   is deliberate, to consolidate signals on the new domain. Do not "fix" it.
-- `og:url` points at the new domain for the same reason. `og:image` points at
-  `https://www.redpillaudio.com/static/78-logo.png`, because that is where the
-  image is actually served from; sevenpoint8.com cannot host it yet.
+- `og:url` points at `https://www.redpillaudio.com/`, this page's own URL. Only
+  the canonical is cross-domain; a share of this page should still identify as
+  this page. `og:image` is `https://www.redpillaudio.com/static/og-image.jpg`,
+  a 1200x630 card built by `scripts/build-og-image.mjs`.
 - All structured data (the Organization and FAQPage JSON-LD) has been removed.
   Do not add any back.
 - `sitemap.xml` has one entry, the root.
@@ -77,6 +71,8 @@ session-recording script without a fresh decision from Jack.
 
 ## Assets
 - `static/78-logo.png` is the 7.8 mark, light on transparent, 720px wide.
+- `static/og-image.jpg` is the 1200x630 social card: the backdrop, the scrim and
+  the mark, centred. Rebuild it with `node scripts/build-og-image.mjs`.
 - `static/bg-blur.jpg` is a blurred screenshot of the old homepage, used as the
   page backdrop, with the blur baked into the file.
 - `brand/` holds the 7.8 files as supplied. Kept in git for provenance,
@@ -89,6 +85,12 @@ session-recording script without a fresh decision from Jack.
   directly; the script recovers the mark from luminance.
 - Internal tooling (pitch deck, content-picker app, working notes) lives in the
   sibling `../redpill-internal/` folder and must never be committed here.
+
+Note that `docs/ENQUIRY_FORM_SETUP.md` and `RENOVATION-PROMPT.md` still describe
+the old product site (the shop, the enquiry drawer, four pages). They are kept
+as history only and are excluded from the deployment. Nothing in them applies.
+The five `.claude/skills/` that described that site have been deleted; they are
+recoverable from the `archive/redpill-final` tag.
 
 ## Deployment
 Auto-deploys to Vercel on every push to `main`. Do not push to `main` or merge
