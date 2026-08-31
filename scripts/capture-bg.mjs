@@ -29,10 +29,14 @@ const SETTLE_MS = 2500;   // let the hero video paint a frame and webfonts land
 //
 // Sigma 40 / saturation 0.55 fixed that but overshot: it flattened the capture
 // into a plain dark gradient, losing any sense that the backdrop IS the old
-// homepage. Sigma 28 / 0.7 keeps the composition legible as a blurred room
-// while still dissolving the red CTAs and every glyph.
+// homepage.
+//
+// The two controls are independent. Sigma is what makes the capture read as a
+// room, so it stays at 28. Saturation is the only thing keeping the old CTA row
+// visible as a red bar bottom left, so it drops to 0.5: the room structure is
+// untouched and the red falls back to a neutral dusty tone.
 const BLUR_SIGMA = 28;
-const SATURATION = 0.7;
+const SATURATION = 0.5;
 const JPEG_QUALITY = 62;
 const TARGET_WIDTH = 1600;
 
