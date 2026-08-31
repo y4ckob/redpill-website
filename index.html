@@ -118,7 +118,9 @@
 
   .logo {
     width: 100%;
-    max-width: 200px;
+    /* Scales with the card instead of stepping at a breakpoint, so the
+       420-508px range, where the card is still narrow, stops being crowded. */
+    max-width: min(200px, 45%);
     height: auto;
     margin: 0 auto 26px;
     display: block;
@@ -163,7 +165,6 @@
       width: calc(100% - 24px);
       padding: 36px 24px;
     }
-    .logo { max-width: 160px; }
     h1 { font-size: 23px; }
   }
 
