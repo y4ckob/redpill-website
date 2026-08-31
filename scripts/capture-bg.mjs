@@ -12,8 +12,7 @@
 import { chromium } from 'playwright';
 import sharp from 'sharp';
 import { spawn } from 'node:child_process';
-import { mkdir } from 'node:fs/promises';
-import { stat } from 'node:fs/promises';
+import { mkdir, stat, writeFile } from 'node:fs/promises';
 
 const LIVE = 'https://www.redpillaudio.com/';
 const PORT = 8000;
@@ -26,11 +25,14 @@ const SETTLE_MS = 2500;   // let the hero video paint a frame and webfonts land
 
 // Sigma 24 was the starting recipe, but it failed its own acceptance test: the
 // old homepage's two brand-red CTAs survived as vivid red pills even under the
-// 0.45 scrim, and the hero headline still read as text-shaped bands. Sigma 40
-// with saturation pulled to 0.55 dissolves both into an even, dark field, and
-// keeps RedPill red from bleeding onto a page that carries no red accent.
-const BLUR_SIGMA = 40;
-const SATURATION = 0.55;
+// 0.45 scrim, and the hero headline still read as text-shaped bands.
+//
+// Sigma 40 / saturation 0.55 fixed that but overshot: it flattened the capture
+// into a plain dark gradient, losing any sense that the backdrop IS the old
+// homepage. Sigma 28 / 0.7 keeps the composition legible as a blurred room
+// while still dissolving the red CTAs and every glyph.
+const BLUR_SIGMA = 28;
+const SATURATION = 0.7;
 const JPEG_QUALITY = 62;
 const TARGET_WIDTH = 1600;
 
@@ -80,6 +82,13 @@ try {
 }
 
 await mkdir('static', { recursive: true });
+
+// Optional: keep the unprocessed screenshot, so the blur/saturation recipe can
+// be re-tuned without hitting the live site again.
+if (process.env.RAW_OUT) {
+  await writeFile(process.env.RAW_OUT, png);
+  console.log(`raw screenshot -> ${process.env.RAW_OUT}`);
+}
 
 await sharp(png)
   .resize({ width: TARGET_WIDTH })
