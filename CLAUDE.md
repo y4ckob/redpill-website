@@ -1,86 +1,99 @@
-# RedPill Audio website — project context
+# redpillaudio.com — 7.8 rebrand landing page — project context
 
 Read this first, every session.
 
 ## What this is
-A static marketing website for RedPill Audio (PT Red Pill Audio), a premium
-audio systems and installation company based in Bali. Four pages:
-`index.html` (landing), `shop.html`, `gallery.html` and `faq.html`. It
-auto-deploys to Vercel from the `main` branch and is live at
-www.redpillaudio.com (SSL enforced).
+RedPill Audio has rebranded to 7.8. This repo used to be the four-page RedPill
+Audio product site. It is now a single static landing page at
+www.redpillaudio.com that sends visitors to https://www.sevenpoint8.com/, plus
+`vercel.json` 301s that move every other old URL to the new domain. It
+auto-deploys to Vercel from `main` and is live with SSL enforced.
+
+The old product site is preserved at the git tag `archive/redpill-final`. The
+untracked heavy photography that used to sit in `assets/` was moved out of the
+repo to the sibling folder `../redpill-assets-archive/`; it was never in git, so
+the tag does not contain it.
 
 ## Tech — keep it exactly this way
-- Plain HTML, CSS and vanilla JavaScript. No build step, no framework, no npm,
-  no bundler. It runs as plain static files (Vercel serves the repo as-is).
-- All styling lives in `assets/css/style.css`, driven by CSS variables defined
-  in `:root` at the top of the file. Reuse those variables. Do not add a CSS
-  framework (no Tailwind, Bootstrap, etc.) or a second design system.
-- All behaviour lives in `assets/js/main.js`: nav, enquiry drawer (product
-  and project modes), request quotation, shop filters, scroll reveals.
-- All four pages share the same nav, footer, enquiry drawer + overlay,
-  WhatsApp float and toast markup. If you change that shared markup in one,
-  change it in all four (except the nav's active-page state). Exception: the
-  collaborators marquee and its "View more" modal live only on `index.html`,
-  since that is the only page with a collaborators section; this divergence is
-  intentional, do not propagate it to the other three.
-- Keep all file paths relative (e.g. `assets/css/style.css`); it is simpler and
-  keeps the site portable.
-- Project skills live in `.claude/skills/` (site-conventions, brand-and-voice,
-  enquiry-system, seo-local, performance-media). They are authoritative on how
-  the site is built; read them before editing.
+- Plain HTML and CSS. No build step, no framework, no bundler, no npm at
+  runtime. Vercel serves the repo as-is.
+- `index.html` is the whole page and is self-contained: CSS is inline in a
+  single `<style>` block, and there is **no JavaScript at all**. It must keep
+  rendering fully with JS disabled. Do not add a script tag.
+- It references exactly two files, `static/78-logo.png` and
+  `static/bg-blur.jpg`. `static/` is the only deployed asset folder.
+- Keep all file paths relative.
+- There is no shared markup to sync any more, and no stylesheet to share. The
+  old `assets/css/style.css` is gone; the handful of tokens the page still uses
+  (`--bg`, `--text`, `--radius`, `--ease`, the Helvetica Neue stacks) are
+  redeclared inline at the top of `index.html`.
+
+## The page — hard limits
+The landing page is a deliberate hard stop. It contains a logo, one `<h1>`, and
+one Continue button. Do **not** add navigation, a contact block, email capture,
+a close button, social links, product content, or any red accent. If asked to
+extend the page, check that is really wanted before building.
+
+## Stale files, kept on purpose
+`.claude/skills/` (five skills), `docs/ENQUIRY_FORM_SETUP.md` and
+`RENOVATION-PROMPT.md` all describe the old four-page product site: the shop,
+the gallery, the enquiry drawer and its webhook. **None of it applies any
+more.** They are kept as history and are excluded from the deployment. Do not
+follow them, and do not treat the skills as authoritative for this repo.
 
 ## Brand voice — strict
 - British English spelling throughout.
 - No em dashes. Use commas, semicolons or parentheses instead.
 - Matter-of-fact tone. No flattery, no marketing embellishment, no exclamation
   marks.
-- Keep the existing endorsement quotes (Steve Lillywhite, Sam Fender, Mark
-  Baker) and the "true sound" positioning as written.
 
-## Money
-- Currency is IDR. Format with dot thousand separators, e.g. 1.220.000.000.
-- Only use prices and specifications that actually appear in the brochure or the
-  asset files. Do not invent, estimate or round prices or technical specs. If
-  anything is unclear or missing, ask before guessing.
-- The brochure PDF is generally authoritative, but it is known to be out of date
-  on the Q-S10 (the brochure lists it as passive; it is in fact an active
-  subwoofer) and it carries an old tagline. Do not treat the brochure as
-  authoritative for the Q-S10; `shop.html` is correct there. Real active-sub
-  spec figures are still pending from engineering, so leave the Q-S10 spec table
-  and its amplification wording alone until Jack supplies them.
+## Redirects
+`vercel.json` 301s every path to https://www.sevenpoint8.com/ **except** `/`,
+`/static/*`, `/robots.txt` and `/sitemap.xml`.
 
-## Commerce model
-- No online payment, ever. Visitors build an enquiry list and request a
-  quotation. Even if prices are displayed, checkout stays "Request quotation"
-  (email, or a webhook set in `main.js`). Do not add a payment gateway.
+The last two exclusions matter. Vercel evaluates `redirects` before the
+filesystem, so without them `robots.txt` would 301 cross-domain to a site that
+is still password protected. A 401 on robots.txt makes Google treat the whole
+origin as disallowed, which would block the crawl that the 301s depend on.
+Never add a rule that catches the root, and never let robots.txt redirect.
 
-## Deployment
-- The site auto-deploys to Vercel on every push to `main`, and is live at
-  www.redpillaudio.com with SSL enforced. There is no GitHub Pages branch, no
-  CNAME file and no manual DNS step; DNS is already in place.
-- Because `main` deploys automatically, do not push to `main` or merge into it
-  without Jack's explicit go-ahead. Do renovation work on a branch.
+`robots.txt` allows everything on purpose. Do not disallow anything: Google has
+to crawl the site to see the 301s.
+
+## SEO
+- The `rel=canonical` points cross-domain at https://www.sevenpoint8.com/. That
+  is deliberate, to consolidate signals on the new domain. Do not "fix" it.
+- `og:url` points at the new domain for the same reason. `og:image` points at
+  `https://www.redpillaudio.com/static/78-logo.png`, because that is where the
+  image is actually served from; sevenpoint8.com cannot host it yet.
+- All structured data (the Organization and FAQPage JSON-LD) has been removed.
+  Do not add any back.
+- `sitemap.xml` has one entry, the root.
+
+## Analytics
+None, and there never was any. This is a standing decision. Do not add GA4,
+Plausible, Vercel Analytics, a Meta pixel, or any measurement or
+session-recording script without a fresh decision from Jack.
 
 ## Assets
-- `assets/hero.mp4` is the drone footage, played in the showroom section
-  (poster: `assets/img/hero-video-poster.jpg`). The landing hero uses
-  `assets/img/hero.jpg`.
-- `assets/RedPill-Audio-Brochure.pdf` is both the file the "Download brochure"
-  buttons link to, and the source of most product data/prices (see the Money
-  section for the Q-S10 caveat).
-- Product images live in `assets/img/products/<id>/` (q3, q4, q6, q-s10,
-  f1-portal): `main.jpg` plus optional `gallery-1..4.jpg`. Each folder has a
-  README.txt with the expected sizes. Missing gallery files are skipped
-  automatically; replace images by filename, no HTML changes needed.
-- The `f1-portal` folder is staged but the F1 Portal is NOT on the site: its
-  shop card was removed pending certification (commit 87f8fb2). Leave the folder
-  in place; do not re-add the card until Jack confirms certification.
-- Internal tooling (pitch deck, the content-picker app, working notes) does not
-  live in this repo; it sits in the sibling `../redpill-internal/` folder and
-  must never be committed here. The relevant paths are in `.gitignore`.
+- `static/78-logo.png` is the 7.8 mark, light on transparent, 720px wide.
+- `static/bg-blur.jpg` is a blurred screenshot of the old homepage, used as the
+  page backdrop, with the blur baked into the file.
+- `brand/` holds the 7.8 files as supplied. Kept in git for provenance,
+  excluded from the deployment via `.vercelignore`.
+- `scripts/` is dev-only tooling that generated `static/`. It is not a build
+  step and is excluded from the deployment, along with `package.json`; that
+  exclusion also stops Vercel detecting a Node project and trying to build.
+- Read `scripts/build-logo.mjs` before touching the logo. Every supplied brand
+  file has transparency baked down onto a checkerboard, so none can be used
+  directly; the script recovers the mark from luminance.
+- Internal tooling (pitch deck, content-picker app, working notes) lives in the
+  sibling `../redpill-internal/` folder and must never be committed here.
+
+## Deployment
+Auto-deploys to Vercel on every push to `main`. Do not push to `main` or merge
+into it without Jack's explicit go-ahead. Do work on a branch.
 
 ## Working style
-- This is an existing, working site. Finish and refine it; do not rebuild from
-  scratch.
-- Read the whole project before editing. Propose a short plan and wait for
-  Jack's go-ahead before making large changes.
+This is a finished, deliberately minimal page. Refine it; do not rebuild it or
+grow it. Propose a short plan and wait for Jack's go-ahead before large changes.

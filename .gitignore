@@ -2,47 +2,17 @@
 .DS_Store
 **/.DS_Store
 
-# Heavy source folders — not referenced by the site
-assets/Speaker images/
-assets/Catalogue images/
-assets/Logos of Colaborators/
-
-# Orphan / unreferenced video source (keep hero.mp4)
-assets/a6c1b84d886b421ea1d08749159a7e10.MP4
-
-# Gallery: exclude full-size originals, keep the web-optimised set the site uses
-assets/img/gallery/*
-!assets/img/gallery/web/
-!assets/img/gallery/web/**
-
-# Loose unreferenced strays at assets root
-assets/Q-S10.jpeg
-assets/Q6.jpeg
-assets/Q6 Side.jpeg
-assets/redpill_logo_alpha.png
-
 # Editor/tooling
-# Track the project skills (authoritative build/brand/SEO conventions), but
-# keep machine-local settings (settings.local.json) out of the repo.
+# Track the project skills, but keep machine-local settings out of the repo.
 .claude/*
 !.claude/skills/
 !.claude/skills/**
 .venv/
 
-# Content picker app (local Instagram picks tool — never ship to the site)
+# Node tooling. Dev-only: the site itself has no build step.
+node_modules/
+
+# Internal tooling: never ship to the site.
 content_picker_app.py
 __pycache__/
-redpill-content-picks/
-redpill-content-picks-round2/
-.content-picker-cache/
-picks-board.html
-review-sheet.html
-
-# Pitch deck build (internal tooling, includes node_modules — never ship)
 deck/
-
-# FAQ working notes (internal build doc, not a public page)
-FAQ_MASTER_BUILD.md
-
-# Node tooling (dev only, no build step ships)
-node_modules/

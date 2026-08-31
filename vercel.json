@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/:path((?!static/|robots\\.txt|sitemap\\.xml).+)",
+      "destination": "https://www.sevenpoint8.com/",
+      "permanent": true
+    }
+  ]
+}
