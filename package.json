@@ -1,0 +1,14 @@
+{
+  "name": "redpill-rebrand-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build-time tooling only. The site itself is plain static files with no build step.",
+  "scripts": {
+    "capture:bg": "node scripts/capture-bg.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0",
+    "sharp": "^0.33.5",
+    "svgo": "^3.3.2"
+  }
+}

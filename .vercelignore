@@ -1,8 +1,17 @@
 # Files kept in git but not served on the public site.
-# None of these are part of the deployed site; docs/ describes the webhook
-# architecture and should not be crawlable.
+# The deployed site is only index.html, static/, robots.txt and sitemap.xml.
 .claude
 docs
 CLAUDE.md
 README.md
 RENOVATION-PROMPT.md
+
+# Heavy 7.8 brand source files: kept in git for provenance, never deployed.
+brand
+
+# Local tooling only. The site has no build step, and excluding package.json
+# keeps Vercel from detecting a Node project and trying to run one.
+node_modules
+scripts
+package.json
+package-lock.json

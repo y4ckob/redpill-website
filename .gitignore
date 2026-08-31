@@ -43,3 +43,6 @@ deck/
 
 # FAQ working notes (internal build doc, not a public page)
 FAQ_MASTER_BUILD.md
+
+# Node tooling (dev only, no build step ships)
+node_modules/
