@@ -119,8 +119,11 @@
   .logo {
     width: 100%;
     /* Scales with the card instead of stepping at a breakpoint, so the
-       420-508px range, where the card is still narrow, stops being crowded. */
-    max-width: min(200px, 45%);
+       420-508px range, where the card is still narrow, stops being crowded.
+       52% is chosen so the 200px arm actually binds: the card's content box
+       tops out at 386px, and 200/386 is 51.8%. So the logo holds 200px from a
+       508px viewport up, and scales below that. */
+    max-width: min(200px, 52%);
     height: auto;
     margin: 0 auto 26px;
     display: block;
